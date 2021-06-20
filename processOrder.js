@@ -1,50 +1,58 @@
 //=== URL Settings ===
 const PRODUCT_API = `${BASE_URL}/api/${API_PATH}/admin/products`;
+const DELETE_ITEM_API = `${BASE_URL}/api/${API_PATH}/admin/product`; ///api/:api_path/admin/product/:product_id
+
+//=== Handle Event Function ===
+function handleDeleteItem(prdId) {
+  return () => {
+    axios
+      .delete(`${DELETE_ITEM_API}/${prdId}`)
+      .then((res) => {
+        console.log("成功刪除:", res);
+        render();
+      })
+      .catch((rej) => {
+        console.log("失敗刪除:", rej);
+      });
+  };
+}
 
 console.log("Process Order!!");
 
-//=== Handle Event Func ===
-// {
-//     "data": {
-//       "title": "[賣]動物園造型衣服3",
-//       "category": "衣服2",
-//       "origin_price": 100,
-//       "price": 300,
-//       "unit": "個",
-//       "description": "Sit down please 名設計師設計",
-//       "content": "這是內容",
-//       "is_enabled": 1,
-//       "imageUrl" : "主圖網址",
-//       "imagesUrl": [
-//         "圖片網址一",
-//         "圖片網址二",
-//         "圖片網址三",
-//         "圖片網址四",
-//         "圖片網址五"
-//       ]
-//     }
-//   }
+function render() {
+  const idList = [];
+  axios.get(PRODUCT_API).then((res) => {
+    const table = document.querySelector("#productList");
+    const { success, products } = res.data;
 
-axios.get(PRODUCT_API).then((res) => {
-  console.log("商品列表：", res.data);
-  const table = document.querySelector("#productList");
+    let renderData = "";
+    products.forEach(
+      ({ title, origin_price, price, is_enabled, id: prdId }, idx) => {
+        renderData += `
+			<tr>
+					<td width=${"120"} style="text-align:center">${title}</td>
+					<td width=${"120"} style="text-align:center">${origin_price}</td>
+					<td width=${"120"} style="text-align:center">${price}</td>
+					<td width=${"150"} style="text-align:center">${is_enabled ? "是" : "否"}</td>
+					<td width=${"120"} style="text-align:center">
+						<button type="button" id="btn-delete">
+							刪除
+						</button">
+					</td>
+			</tr>
+	`;
 
-  const { success, products } = res.data;
+        idList.push(prdId);
+      }
+    );
 
-  let renderData = "";
-  products.forEach(({ title, origin_price, price, is_enabled }) => {
-    renderData += `
-    <tr>
-        <td width=${"120"} style="text-align:center">${title}</td>
-        <td width=${"120"} style="text-align:center">${origin_price}</td>
-        <td width=${"120"} style="text-align:center">${price}</td>
-        <td width=${"150"} style="text-align:center">${
-      is_enabled ? "是" : "否"
-    }</td>
-        <td width=${"120"} style="text-align:center"><button type="button">刪除</button"></td>
-    </tr>
-`;
+    table.innerHTML = success ? renderData : null;
+
+    const btnList = document.querySelectorAll("#btn-delete");
+    btnList.forEach((btn, idx) =>
+      btn.addEventListener("click", handleDeleteItem(idList[idx]))
+    );
   });
+}
 
-  table.innerHTML = success ? renderData : null;
-});
+render();
