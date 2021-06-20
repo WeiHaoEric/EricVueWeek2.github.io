@@ -11,7 +11,7 @@ function handleLogIn() {
   axios
     .post(Login_API, { username, password })
     .then((res) => {
-      const { expired, token } = res;
+      const { expired, token } = res.data;
       console.log(token, expired);
       document.cookie = `hexToken = ${token};`;
       document.cookie = `expires = ${expired};`;
