@@ -1,19 +1,7 @@
 //=== URL Settings ===
-const ALL_PRODUCT_API = `${BASE_URL}/api/:${API_PATH}/products/all`; ///api/:api_path/products/all
-const ADD_PRODUCT_API = `${BASE_URL}/api/:${API_PATH}/admin/product`;
+const PRODUCT_API = `${BASE_URL}/api/${API_PATH}/admin/products`;
 
 console.log("Process Order!!");
-
-//=== Get DOMs ===
-const productName = document.querySelector("#product");
-const productNum = document.querySelector("#product-number");
-
-const originalPrice = document.querySelector("#original-price");
-const actualPrice = document.querySelector("#actual-price");
-const enableSelect = document.querySelector(".enable-select");
-const btnAddItem = document.querySelector("#add-item");
-
-// console.log(btnAddItem, productName, originalPrice, actualPrice, enableSelect);
 
 //=== Handle Event Func ===
 // {
@@ -37,21 +25,26 @@ const btnAddItem = document.querySelector("#add-item");
 //     }
 //   }
 
-function handleAddItem() {
-  const postData = {
-    title: productName.value,
-    unit: productNum.value,
-    origin_price: originalPrice.value,
-    price: actualPrice.value,
-    is_enabled: enableSelect.value,
-  };
+axios.get(PRODUCT_API).then((res) => {
+  console.log("商品列表：", res.data);
+  const table = document.querySelector("#productList");
 
-  console.log("===>handleAddItem:", postData);
-  axios.post(ADD_PRODUCT_API, postData).then((res) => {
-    console.log("add_item", res);
+  const { success, products } = res.data;
+
+  let renderData = "";
+  products.forEach(({ title, origin_price, price, is_enabled }) => {
+    renderData += `
+    <tr>
+        <td width=${"120"} style="text-align:center">${title}</td>
+        <td width=${"120"} style="text-align:center">${origin_price}</td>
+        <td width=${"120"} style="text-align:center">${price}</td>
+        <td width=${"150"} style="text-align:center">${
+      is_enabled ? "是" : "否"
+    }</td>
+        <td width=${"120"} style="text-align:center"><button type="button">刪除</button"></td>
+    </tr>
+`;
   });
-}
 
-btnAddItem.addEventListener("click", handleAddItem);
-
-// axios.get(ALL_PRODUCT_API).then((res) => console.log(ALL_PRODUCT_API, res));
+  table.innerHTML = success ? renderData : null;
+});

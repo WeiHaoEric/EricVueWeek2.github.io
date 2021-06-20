@@ -37,7 +37,7 @@ function assignTokenToAxios(newToken) {
     console.log("check user:", res);
   });
 
-  axios.get(PRODUCT_API).then((res) => console.log("商品列表:", res));
+ 
 }
 
 function checkToken() {
