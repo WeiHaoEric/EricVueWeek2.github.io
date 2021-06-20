@@ -3,7 +3,7 @@ const BASE_URL = "https://vue3-course-api.hexschool.io";
 const API_PATH = "hello-eric";
 const Login_API = `${BASE_URL}/admin/signin`;
 
-//=== Event Func ===
+//=== Handle Event Func ===
 function handleLogIn() {
   const username = document.querySelector("#username").value;
   const password = document.querySelector("#password").value;
@@ -22,6 +22,17 @@ function handleLogIn() {
     .catch((rej) => console.log("failed:", rej));
 }
 
+// === Check Cookie has token and expires
+function checkToken(){
+    const token = document.cookie.replace(/(?:(?:^|.*;\s*)hexToken\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+    const expires = document.cookie.replace(/(?:(?:^|.*;\s*)expires\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+
+    console.log("token:", token, "expires:", expires);
+}
+
+
+
 //=== Get Loging Dom and set callback event ===
 const btnLogIn = document.querySelector("#login");
 btnLogIn.addEventListener("click", handleLogIn);
+checkToken();
