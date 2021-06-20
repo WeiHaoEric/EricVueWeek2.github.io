@@ -46,7 +46,6 @@ function handleAddItem() {
     },
   };
 
-  // console.log("===>handleAddItem:", postData);
   axios
     .post(ADD_PRODUCT_API, postData)
     .then((res) => {
@@ -72,17 +71,15 @@ function handleDeleteItem(prdId) {
 
 // === Check Cookie has token and expires
 function assignTokenToAxios(newToken) {
-  console.log("===>assignTokenToAxios", newToken);
   axios.defaults.headers.common["Authorization"] = newToken;
 
   axios.post(USER_CHECK_API).then((res) => {
-    console.log("check user:", res);
+    console.log("確認使用者是否登入:", res);
     if (res.data.success) render();
   });
 }
 
 function checkToken() {
-  console.log("===>checkToken:", document.cookie);
   const token = document.cookie.split(";")[0].split("=")[1];
   const loginInfo = document.querySelector(".login-info");
   loginInfo.innerHTML = token
