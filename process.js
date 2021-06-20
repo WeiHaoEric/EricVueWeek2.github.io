@@ -4,10 +4,8 @@ const API_PATH = "hello-eric";
 const Login_API = `${BASE_URL}/admin/signin`;
 const USER_CHECK_API = `${BASE_URL}/api/user/check`;
 const PRODUCT_API = `${BASE_URL}/api/${API_PATH}/admin/products`;
-const DELETE_ITEM_API = `${BASE_URL}/api/${API_PATH}/admin/product`; ///api/:api_path/admin/product/:product_id
-
-// TBD: temp for test
-// const token = `eyJhbGciOiJSUzI1NiIsImtpZCI6InRCME0yQSJ9.eyJpc3MiOiJodHRwczovL3Nlc3Npb24uZmlyZWJhc2UuZ29vZ2xlLmNvbS92dWUtY291cnNlLWFwaSIsImF1ZCI6InZ1ZS1jb3Vyc2UtYXBpIiwiYXV0aF90aW1lIjoxNjI0MTc1NzI2LCJ1c2VyX2lkIjoiMWYwRVo0bVhselRJbTdYWEZzc1huZ0JlQmd0MiIsInN1YiI6IjFmMEVaNG1YbHpUSW03WFhGc3NYbmdCZUJndDIiLCJpYXQiOjE2MjQxNzU3MjYsImV4cCI6MTYyNDYwNzcyNiwiZW1haWwiOiJ2dWFybmV0MDMxOEBnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJlbWFpbCI6WyJ2dWFybmV0MDMxOEBnbWFpbC5jb20iXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.mKO2W0Srki9gLD9Uff8nlbzQNqAl59ekHSjRRey9ttpl8_nTIPRJy3obz_RIAjz_fSfybP4axt6fRhFQul30RUfrdmnJ0wLpMS_CK3At1o1Zi6WXkqnPYn8HrAzqNVchLU8wVgvtRjnKiPeLu-1-uFLXkdXY6-5e4llhhNr9Mhl2n76z6ST4_CBLqvOycdnNmqYLra9wYJZWN-GxejFrqNUgGb--P7E3vsTlFdD7wqa8SMtB8SsJsD6efj0oJJbZ_XO3VcKiCIHdwaiuuC2AMopOX6C9pwAlwheYBIJnOgOjm67_Do_7n14LV7AKWm7-lO-nuW7zLnrN-rIvmxJ9Gw`;
+const DELETE_ITEM_API = `${BASE_URL}/api/${API_PATH}/admin/product`; // api_path/admin/product/:product_id
+const ADD_PRODUCT_API = `${BASE_URL}/api/${API_PATH}/admin/product`; // api_path/admin/product
 
 //=== Handle Event Func ===
 function handleLogIn() {
@@ -27,6 +25,35 @@ function handleLogIn() {
       assignTokenToAxios(token);
     })
     .catch((rej) => console.log("failed:", rej));
+}
+
+function handleAddItem() {
+  // title(String)、category(String)、unit(String)、origin_price(Number)、price(Number) 為必填欄位
+  const productName = document.querySelector("#product");
+  const productNum = document.querySelector("#product-number");
+  const originalPrice = document.querySelector("#original-price");
+  const actualPrice = document.querySelector("#actual-price");
+  const enableSelect = document.querySelector(".enable-select");
+
+  const postData = {
+    data: {
+      title: productName.value,
+      category: "life",
+      unit: productNum.value,
+      origin_price: parseInt(originalPrice.value),
+      price: parseInt(actualPrice.value),
+      is_enabled: enableSelect.value,
+    },
+  };
+
+  // console.log("===>handleAddItem:", postData);
+  axios
+    .post(ADD_PRODUCT_API, postData)
+    .then((res) => {
+      console.log("商品新增成功:", res);
+      render();
+    })
+    .catch((rej) => console.log("商品新增錯誤:", rej));
 }
 
 function handleDeleteItem(prdId) {
@@ -65,13 +92,6 @@ function checkToken() {
   if (token) assignTokenToAxios(token);
 }
 
-//=== Get Loging Dom and set callback event ===
-const btnLogIn = document.querySelector("#login");
-btnLogIn.addEventListener("click", handleLogIn);
-checkToken();
-
-//======
-
 //=== Handle Event Function ===
 function render() {
   const idList = [];
@@ -108,3 +128,12 @@ function render() {
     );
   });
 }
+
+//=== Main Procedure ===
+const btnLogIn = document.querySelector("#login");
+btnLogIn.addEventListener("click", handleLogIn);
+
+const btnAddItem = document.querySelector("#add-item");
+btnAddItem.addEventListener("click", handleAddItem);
+
+checkToken();
