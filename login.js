@@ -2,9 +2,11 @@
 const BASE_URL = "https://vue3-course-api.hexschool.io";
 const API_PATH = "hello-eric";
 const Login_API = `${BASE_URL}/admin/signin`;
+const USER_CHECK_API = `${BASE_URL}/api/user/check`;
+
 
 // TBD: temp for test
-// const token = `eyJhbGciOiJSUzI1NiIsImtpZCI6InRCME0yQSJ9.eyJpc3MiOiJodHRwczovL3Nlc3Npb24uZmlyZWJhc2UuZ29vZ2xlLmNvbS92dWUtY291cnNlLWFwaSIsImF1ZCI6InZ1ZS1jb3Vyc2UtYXBpIiwiYXV0aF90aW1lIjoxNjI0MTcyNzA4LCJ1c2VyX2lkIjoiMWYwRVo0bVhselRJbTdYWEZzc1huZ0JlQmd0MiIsInN1YiI6IjFmMEVaNG1YbHpUSW03WFhGc3NYbmdCZUJndDIiLCJpYXQiOjE2MjQxNzI3MDgsImV4cCI6MTYyNDYwNDcwOCwiZW1haWwiOiJ2dWFybmV0MDMxOEBnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJlbWFpbCI6WyJ2dWFybmV0MDMxOEBnbWFpbC5jb20iXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.TX4SyzyzOzzp2UW2H5IK6CW6e6nC29ABnrZCS5-6Sd6DcXMOsPz84hksVQdzFTN9kQ3oCIjjgb0kc7ghQO3JH1K5wcd0T4Z56YgRjZ8ieQ-BDJqEH_R8p5ESx9Q9dgDdI9wTvIg79ABgjMg47TSCK9BsB0COrXt1M5FkXq1CO0ZuBVT0bAXDG7OsWB8omQEVl6DGFlBoaoHH6Q3dNUYInI_UGp3jbjjGm0scNFMYRZ2lQEkng8-oahiVGPXWYxG6hWH5m6yEhD0hmML5zXWB_iuZy27fQtxAP01ywxFtB_UhvoB6092QPWcEkocqM6MXM8eiTsCj3_Zkcy-U22bhjQ`;
+const token = `eyJhbGciOiJSUzI1NiIsImtpZCI6InRCME0yQSJ9.eyJpc3MiOiJodHRwczovL3Nlc3Npb24uZmlyZWJhc2UuZ29vZ2xlLmNvbS92dWUtY291cnNlLWFwaSIsImF1ZCI6InZ1ZS1jb3Vyc2UtYXBpIiwiYXV0aF90aW1lIjoxNjI0MTc1NzI2LCJ1c2VyX2lkIjoiMWYwRVo0bVhselRJbTdYWEZzc1huZ0JlQmd0MiIsInN1YiI6IjFmMEVaNG1YbHpUSW03WFhGc3NYbmdCZUJndDIiLCJpYXQiOjE2MjQxNzU3MjYsImV4cCI6MTYyNDYwNzcyNiwiZW1haWwiOiJ2dWFybmV0MDMxOEBnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJlbWFpbCI6WyJ2dWFybmV0MDMxOEBnbWFpbC5jb20iXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.mKO2W0Srki9gLD9Uff8nlbzQNqAl59ekHSjRRey9ttpl8_nTIPRJy3obz_RIAjz_fSfybP4axt6fRhFQul30RUfrdmnJ0wLpMS_CK3At1o1Zi6WXkqnPYn8HrAzqNVchLU8wVgvtRjnKiPeLu-1-uFLXkdXY6-5e4llhhNr9Mhl2n76z6ST4_CBLqvOycdnNmqYLra9wYJZWN-GxejFrqNUgGb--P7E3vsTlFdD7wqa8SMtB8SsJsD6efj0oJJbZ_XO3VcKiCIHdwaiuuC2AMopOX6C9pwAlwheYBIJnOgOjm67_Do_7n14LV7AKWm7-lO-nuW7zLnrN-rIvmxJ9Gw`;
 
 //=== Handle Event Func ===
 function handleLogIn() {
@@ -15,34 +17,47 @@ function handleLogIn() {
     .post(Login_API, { username, password })
     .then((res) => {
       const { expired, token } = res.data;
-      console.log(token, expired);
       document.cookie = `hexToken = ${token}`;
       document.cookie = `expires = ${expired}`;
 
       const loginInfo = document.querySelector(".login-info");
       loginInfo.innerHTML = `<h3 style="color:green">順利登入，可操作以下的商品</h3>`;
+
+      assignTokenToAxios(token);
     })
     .catch((rej) => console.log("failed:", rej));
 }
 
 // === Check Cookie has token and expires
+function assignTokenToAxios(newToken) {
+  console.log("===>assignTokenToAxios");
+  axios.defaults.headers.common["Authorization"] = newToken;
+
+  axios.post(USER_CHECK_API).then((res) => {
+    console.log("check user:", res);
+  });
+
+  axios.get(PRODUCT_API).then((res) => console.log("商品列表:", res));
+}
+
 function checkToken() {
-  const token = document.cookie.replace(
-    /(?:(?:^|.*;\s*)hexToken\s*\=\s*([^;]*).*$)|^.*$/,
-    "$1"
-  );
-  const expires = document.cookie.replace(
-    /(?:(?:^|.*;\s*)expires\s*\=\s*([^;]*).*$)|^.*$/,
-    "$1"
-  );
+  //   const token = document.cookie.replace(
+  //     /(?:(?:^|.*;\s*)hexToken\s*\=\s*([^;]*).*$)|^.*$/,
+  //     "$1"
+  //   );
+  //   const expires = document.cookie.replace(
+  //     /(?:(?:^|.*;\s*)expires\s*\=\s*([^;]*).*$)|^.*$/,
+  //     "$1"
+  //   );
 
-
-  console.log("===>checkToken:", token, expires);
+  //   console.log("===>checkToken:", token);
 
   const loginInfo = document.querySelector(".login-info");
   loginInfo.innerHTML = token
     ? `<h3 style="color:green">順利登入，可操作以下的商品</h3>`
     : `<h3 style="color: rgba(244, 135, 135, 0.813)">請先登入</h3>`;
+
+  if (token) assignTokenToAxios(token);
 }
 
 //=== Get Loging Dom and set callback event ===
