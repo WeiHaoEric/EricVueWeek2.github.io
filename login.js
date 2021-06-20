@@ -27,6 +27,7 @@ function checkToken(){
     const token = document.cookie.replace(/(?:(?:^|.*;\s*)hexToken\s*\=\s*([^;]*).*$)|^.*$/, "$1");
     const expires = document.cookie.replace(/(?:(?:^|.*;\s*)expires\s*\=\s*([^;]*).*$)|^.*$/, "$1");
 
+    console.log("===>cookie:", document.cookie);
     console.log("token:", token, "expires:", expires);
 }
 
