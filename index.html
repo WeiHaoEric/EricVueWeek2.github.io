@@ -26,9 +26,32 @@
     </form>
 
     <div class="login-info">
-      <h3 style="color:rgba(244, 135, 135, 0.813)">請先登入</h3>
-      
+      <h3 style="color: rgba(244, 135, 135, 0.813)">請先登入</h3>
     </div>
+    <hr />
+    <form>
+      <div class="price-area">
+        <h2>商品上傳區</h2>
+
+        <label for="product">商品名稱</label>
+        <input type="number" id="product" />
+
+        <div>
+          <label for="original-price">原始價格</label>
+          <input type="number" id="original-price" />
+          <label for="actual-price">實際價格</label>
+          <input type="number" id="actual-price" />
+        </div>
+
+        <div>
+          <label>是否啟用</label>
+          <select>
+            <option value="yes">是</option>
+            <option value="no">否</option>
+          </select>
+        </div>
+      </div>
+    </form>
     <hr />
     <table class="table mt-4">
       <thead>
