@@ -1,1 +1,48 @@
-Hello~Eric
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=
+  , initial-scale=1.0">
+  <title>Document</title>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/axios/0.9.1/axios.min.js'
+      integrity='sha512-Xk3wWei2TGrsh9kDSBKUMIjw/86sLUvhtnv9f7fOuIwhhiUTKz8szkWkzHthrM5Bb3Bu9idSzkxOrkzhcneuiw=='
+      crossorigin='anonymous'></script>
+</head>
+<body>
+  <form>
+    <label for="username">使用者姓名</label>
+    <input type="email" id="username">
+    <hr>
+    <label for="password">使用者密碼</label>
+    <input type="password" id="password">
+    <button type="button" id="login">登入</button>
+  </form>
+  <hr>
+  <table class="table mt-4">
+    <thead>
+      <tr>
+        <th>產品名稱</th>
+        <th width="120">
+          原價
+        </th>
+        <th width="120">
+          售價
+        </th>
+        <th width="150">
+          是否啟用
+        </th>
+        <th width="120">
+          刪除
+        </th>
+      </tr>
+    </thead>
+    <tbody id="productList">
+    </tbody>
+  </table>
+
+<script src="./login.js"></script>
+<script src="./processOrder.js"></script>
+</body>
+</html>
