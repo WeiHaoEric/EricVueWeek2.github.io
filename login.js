@@ -12,11 +12,11 @@ function handleLogIn() {
     .post(Login_API, { username, password })
     .then((res) => {
       const { expired, token } = res;
-      document.cookie = `hexToken = ${token}; expired={expired}`;
+      document.cookie = `hexToken = ${token};`;
+      document.cookie = `expired={expired};`;
 
       const loginInfo = document.querySelector(".login-info");
       loginInfo.innerHTML = `<h3 style="color:green">順利登入，可操作以下的商品</h3>`;
-
     })
     .catch((rej) => console.log("failed:", rej));
 }
